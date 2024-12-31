@@ -8,7 +8,12 @@ class Node {
 
 export class Tree {
 	constructor(array) {
-		this.root = this.buildTree(array, 0, array.length - 1);
+		const sortedUniqueArray = this.sortArray(array);
+		this.root = this.buildTree(
+			sortedUniqueArray,
+			0,
+			sortedUniqueArray.length - 1
+		);
 		this.array = array;
 	}
 
@@ -20,6 +25,7 @@ export class Tree {
 
 		// Find the midpoint index within the current subarray
 		let midPoint = Math.floor((start + end) / 2);
+		console.log(array[midPoint]);
 
 		// Create a root node with the value at the midpoint
 		let rootNode = new Node(array[midPoint]);
@@ -30,5 +36,10 @@ export class Tree {
 
 		// Step 4: Return the root node
 		return rootNode;
+	}
+
+	sortArray(array) {
+		const processedArray = [...new Set(array)].sort((a, b) => a - b);
+		return processedArray;
 	}
 }
