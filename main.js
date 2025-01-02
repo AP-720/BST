@@ -1,5 +1,17 @@
 import { Tree } from "./bst.js";
 
+// Remember that to immediately assign the result of a function to a variable you need to use IIFE.
+// const testArray = (function randomNumberArray() {
+// 	const array = [];
+// 	for (let i = 0; i < 10; i++) {
+// 		const randomNumber = Math.floor(Math.random() * 100) + 1;
+// 		array.push(randomNumber);
+// 	}
+// 	return array;
+// })();
+
+// [1, 2, 3, 4, 5, 6, 7]
+
 const testArray = [1, 2, 3, 4, 5, 6, 7];
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -18,9 +30,8 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 const test = new Tree(testArray);
 
-// test.insert(10);
-// test.insert(20);
-// test.insert(5);
-// test.insert(8);
+prettyPrint(test.root);
+
+test.deleteItem(6);
 
 prettyPrint(test.root);
