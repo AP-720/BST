@@ -169,4 +169,34 @@ export class Tree {
 		}
 		return node;
 	}
+
+	find(value) {
+		// Start traversal from the root node
+		let currentNode = this.root;
+
+		// If the tree is empty, return null
+		if (!currentNode) {
+			return null;
+		}
+
+		// Traverse the tree iteratively
+		while (currentNode) {
+			// Check if the current node holds the target value
+			if (value === currentNode.value) {
+				return currentNode;
+			}
+
+			// Move to the left subtree if the value is smaller
+			if (value < currentNode.value) {
+				currentNode = currentNode.left;
+			}
+			// Move to the right subtree if the value is larger
+			else if (value > currentNode.value) {
+				currentNode = currentNode.right;
+			}
+		}
+
+		// If the value is not found in the tree, return null
+		return null;
+	}
 }

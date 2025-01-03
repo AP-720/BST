@@ -10,6 +10,16 @@ import { Tree } from "./bst.js";
 // 	return array;
 // })();
 
+// Nice way to test and log the find method.
+// const testFind = (tree, value) => {
+//     const result = tree.find(value);
+//     if (result) {
+//         console.log(`Found value ${value}:`, result);
+//     } else {
+//         console.log(`Value ${value} not found.`);
+//     }
+// };
+
 // [1, 2, 3, 4, 5, 6, 7]
 
 const testArray = [1, 2, 3, 4, 5, 6, 7];
@@ -29,9 +39,5 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 };
 
 const test = new Tree(testArray);
-
-prettyPrint(test.root);
-
-test.deleteItem(6);
 
 prettyPrint(test.root);
