@@ -38,6 +38,12 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 	}
 };
 
+const printNode = (node) => {
+	console.log(node.value);
+};
+
 const test = new Tree(testArray);
 
 prettyPrint(test.root);
+
+test.levelOrder(printNode);

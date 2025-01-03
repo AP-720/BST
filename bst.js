@@ -199,4 +199,37 @@ export class Tree {
 		// If the value is not found in the tree, return null
 		return null;
 	}
+
+	levelOrder(callback) {
+		// Validate the callback function
+		if (typeof callback !== "function") {
+			throw new Error("Callback is not a function.");
+		}
+
+		// If the tree is empty, there's nothing to traverse
+		if (!this.root) {
+			return;
+		}
+
+		// Initialize the queue and add the root node to start
+		const queue = [];
+		queue.push(this.root);
+
+		// Loop while there are nodes to process
+		while (queue.length > 0) {
+			// Remove the first node in the queue (FIFO)
+			let current = queue.shift();
+
+			// Call the callback function with the current node
+			callback(current);
+
+			// Add the left and right children to the queue if they exist
+			if (current.left) {
+				queue.push(current.left);
+			}
+			if (current.right) {
+				queue.push(current.right);
+			}
+		}
+	}
 }
