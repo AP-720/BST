@@ -46,4 +46,4 @@ const test = new Tree(testArray);
 
 prettyPrint(test.root);
 
-test.levelOrder(printNode);
+test.postOrder(printNode);

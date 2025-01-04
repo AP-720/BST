@@ -200,6 +200,7 @@ export class Tree {
 		return null;
 	}
 
+	//  Traverse the tree in breadth-first level order
 	levelOrder(callback) {
 		// Validate the callback function
 		if (typeof callback !== "function") {
@@ -231,5 +232,55 @@ export class Tree {
 				queue.push(current.right);
 			}
 		}
+	}
+
+	// Traverses the tree in **pre-order** (root → left → right).
+	// Visits the current node first, then recursively visits the left and right subtrees.
+	preOrder(callback, node = this.root) {
+		if (typeof callback !== "function") {
+			throw new Error("Callback is not a function.");
+		}
+
+		if (!node) {
+			return; // Base case for recursion
+		}
+
+		callback(node); // Process current node
+		this.preOrder(callback, node.left); // Traverse left subtree
+		this.preOrder(callback, node.right); // Traverse right subtree
+	}
+
+	// Traverses the tree in **in-order** (left → root → right).
+	// Visits the left subtree first, then the current node, and finally the right subtree.
+	// Commonly used for binary search trees to retrieve nodes in sorted order.
+	inOrder(callback, node = this.root) {
+		if (typeof callback !== "function") {
+			throw new Error("Callback is not a function.");
+		}
+
+		if (!node) {
+			return; // Base case for recursion
+		}
+
+		this.inOrder(callback, node.left); // Traverse left subtree
+		callback(node); // Process current node
+		this.inOrder(callback, node.right); // Traverse right subtree
+	}
+
+	// Traverses the tree in **post-order** (left → right → root).
+	// Visits the left subtree first, then the right subtree, and finally the current node.
+	// Often used for tasks like deleting or freeing nodes after processing child nodes.
+	postOrder(callback, node = this.root) {
+		if (typeof callback !== "function") {
+			throw new Error("Callback is not a function.");
+		}
+
+		if (!node) {
+			return; // Base case for recursion
+		}
+
+		this.postOrder(callback, node.left); // Traverse left subtree
+		this.postOrder(callback, node.right); // Traverse right subtree
+		callback(node); // Process current node
 	}
 }
