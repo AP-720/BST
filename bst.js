@@ -283,4 +283,53 @@ export class Tree {
 		this.postOrder(callback, node.right); // Traverse right subtree
 		callback(node); // Process current node
 	}
+
+	// Returns the given node’s height. Height is defined as the number of edges in the longest path from a given node to a leaf node.
+	height(node) {
+		// Base case: If the node is null (e.g., empty subtree),
+		// the height is considered -1 because there's no node present.
+		if (!node) {
+			return -1;
+		}
+
+		// Recursively calculate the height of the left subtree.
+		// This will return the height of the deepest node in the left subtree.
+		const leftHeight = this.height(node.left);
+
+		// Recursively calculate the height of the right subtree.
+		// This will return the height of the deepest node in the right subtree.
+		const rightHeight = this.height(node.right);
+
+		// The height of the current node is one more than the maximum height
+		// of its left and right subtrees.
+		// Add 1 to account for the current node itself.
+		return 1 + Math.max(leftHeight, rightHeight);
+	}
+
+	// Returns the given node’s depth. Depth is defined as the number of edges in the path from a given node to the tree’s root node.
+	depth(node) {
+		// Handle edge cases: tree is empty or input node is null.
+		if (!this.root || !node) {
+			return -1;
+		}
+
+		let currentNode = this.root; // Start traversal from the root.
+		let nodeDepth = 0;
+
+		// Traverse the tree iteratively to locate the target node.
+		while (currentNode) {
+			// If the target node is found, return the current depth.
+			if (node.value === currentNode.value) {
+				return nodeDepth;
+			}
+
+			// Move to the left or right subtree based on the node's value.
+			nodeDepth++; // Increment depth for each level of traversal.
+			currentNode =
+				node.value < currentNode.value ? currentNode.left : currentNode.right;
+		}
+
+		// If the node is not found, return -1.
+		return -1;
+	}
 }

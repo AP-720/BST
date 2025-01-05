@@ -46,4 +46,4 @@ const test = new Tree(testArray);
 
 prettyPrint(test.root);
 
-test.postOrder(printNode);
+console.log(test.depth({ value: 5 }));
