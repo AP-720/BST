@@ -82,92 +82,58 @@ export class Tree {
 		}
 	}
 
-	deleteItem(value, node = this.root) {
-		// Check if the node to be deleted is the root and matches the value to delete.
-		if (node === this.root && node.value === value) {
-			// Case 1: Root has no children (leaf node)
-			if (!node.left && !node.right) {
-				// If the root has no left or right child, simply set the root to null.
-				this.root = null;
-			}
-			// Case 2: Root has one child (right child only)
-			else if (!node.left) {
-				// If the root has only a right child, replace the root with the right child.
-				this.root = node.right;
-			}
-			// Case 3: Root has one child (left child only)
-			else if (!node.right) {
-				// If the root has only a left child, replace the root with the left child.
-				this.root = node.left;
-			}
-			// Case 4: Root has two children
-			else {
-				// If the root has both left and right children:
-				// Find the in-order successor (smallest value in the right subtree).
-				let successor = this.getSuccessor(node.right);
-
-				// Replace the root's value with the in-order successor's value.
-				this.root.value = successor.value;
-
-				// Recursively delete the successor from the right subtree.
-				this.root.right = this.deleteItem(successor.value, this.root.right);
-			}
-
-			// Since the root was processed directly, return here to avoid further traversal.
-			return;
+	deleteItem(value) {
+		// Check if the tree is empty (i.e., no root node).
+		if (!this.root) {
+			return; // No node to delete, exit the function.
 		}
 
-		// Base case: If the subtree is empty, return null
-		if (!node) {
-			return null;
-		}
+		// Helper function to find the smallest node in the right subtree.
+		// This node will be the in-order successor, used for replacing a node with two children.
+		const getSuccessor = (node) => {
+			// Traverse left until the leftmost node is found (smallest node).
+			while (node.left) {
+				node = node.left;
+			}
+			return node; // Return the leftmost (smallest) node.
+		};
 
-		// Traverse the left subtree if the value is smaller than the current node's value
-		if (value < node.value) {
-			node.left = this.deleteItem(value, node.left);
-		}
-		// Traverse the right subtree if the value is larger than the current node's value
-		else if (value > node.value) {
-			node.right = this.deleteItem(value, node.right);
-		}
-		// Found the node to delete
-		else {
-			// Case 1: Node has no children (it's a leaf node)
-			if (!node.left && !node.right) {
-				return null;
+		// Recursive helper function to delete a node in the tree.
+		const deleteNode = (node, value) => {
+			// Base case: if node is null, return null (value not found).
+			if (!node) return null;
+
+			// Traverse the tree based on the value to delete.
+			if (value < node.value) {
+				// Value is smaller than the current node's value, so search the left subtree.
+				node.left = deleteNode(node.left, value);
+			} else if (value > node.value) {
+				// Value is larger than the current node's value, so search the right subtree.
+				node.right = deleteNode(node.right, value);
+			} else {
+				// Node to be deleted is found.
+
+				// Case 1: Node is a leaf (no children), return null to remove it.
+				if (!node.left && !node.right) return null;
+
+				// Case 2: Node has only one child (left or right), replace the node with its child.
+				if (!node.left) return node.right; // No left child, replace with right child.
+				if (!node.right) return node.left; // No right child, replace with left child.
+
+				// Case 3: Node has two children, replace it with the in-order successor.
+				let successor = getSuccessor(node.right); // Find the in-order successor (smallest in the right subtree).
+				node.value = successor.value; // Replace the current node's value with the successor's value.
+
+				// Recursively delete the successor (it might have at most one child).
+				node.right = deleteNode(node.right, successor.value);
 			}
 
-			// Case 2: Node has only a right child
-			if (!node.left) {
-				return node.right;
-			}
+			// Return the updated node after deletion or replacement.
+			return node;
+		};
 
-			// Case 3: Node has only a left child
-			if (!node.right) {
-				return node.left;
-			}
-
-			// Case 4: Node has two children
-			// Find the in-order successor (smallest value in the right subtree)
-			let successor = this.getSuccessor(node.right);
-
-			// Replace the current node's value with the successor's value
-			node.value = successor.value;
-
-			// Delete the successor from the right subtree
-			node.right = this.deleteItem(successor.value, node.right);
-		}
-
-		// Return the updated node
-		return node;
-	}
-
-	// helper method to find the smallest value in the right subtree as that will be the closet number to the deleted nodes value.
-	getSuccessor(node) {
-		while (node.left) {
-			node = node.left;
-		}
-		return node;
+		// Start the deletion process from the root of the tree.
+		this.root = deleteNode(this.root, value);
 	}
 
 	find(value) {
@@ -331,5 +297,62 @@ export class Tree {
 
 		// If the node is not found, return -1.
 		return -1;
+	}
+
+	// Checks if the tree is balanced. A balanced tree is one where the difference between heights of the left subtree and the right subtree of every node is not more than 1.
+	isBalanced() {
+		// Check if the tree is empty
+		if (!this.root) {
+			return true; // An empty tree is balanced by definition
+		}
+
+		// Helper function to check the balance of a subtree
+		const checkBalance = (node) => {
+			// Base case: If the node is null, return a height of -1 and balanced = true
+			// A null node is considered balanced and its height is -1
+			if (!node) return { height: -1, balanced: true };
+
+			const left = checkBalance(node.left);
+			const right = checkBalance(node.right);
+
+			// Check if the current node is balanced:
+			const balanced =
+				left.balanced && // Left subtree must be balanced
+				right.balanced && // Right subtree must be balanced
+				Math.abs(left.height - right.height) <= 1; // Height difference must be <= 1
+
+			// Calculate the height of the current node:
+			// - It's the maximum height of the left or right subtree, plus 1 for the current node itself
+			const height = Math.max(left.height, right.height) + 1;
+
+			// Return an object containing the height and balance status of the current node
+			return { height, balanced };
+		};
+
+		// Start checking balance from the root node
+		// The helper function will return an object { height, balanced }
+		// We are only interested in the balanced property of the root node
+		return checkBalance(this.root).balanced;
+	}
+
+	rebalance() {
+		// Step 1: Check if the tree is already balanced
+		if (this.isBalanced()) {
+			// If the tree is balanced, there's no need to rebalance it.
+			return "Tree is already balanced.";
+		}
+
+		// Step 2: Perform an in-order traversal to collect node values
+		// In-order traversal retrieves node values in sorted order
+		// for a Binary Search Tree.
+		const nodes = [];
+		this.inOrder((node) => nodes.push(node.value)); // Traverse and collect values in sorted order.
+
+		// Step 3: Rebuild the tree using the sorted node values
+		// The `buildTree` function creates a balanced tree from a sorted array.
+		this.root = this.buildTree(nodes, 0, nodes.length - 1);
+
+		// Return a message to confirm that the tree has been rebalanced.
+		return "Tree has been rebalanced";
 	}
 }
